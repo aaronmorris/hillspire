@@ -5,8 +5,8 @@
     <externalId>false</externalId>
     <label>Grantee</label>
     <referenceTo>Contact</referenceTo>
-    <relationshipLabel>Grantees</relationshipLabel>
-    <relationshipName>Grantees</relationshipName>
+    <relationshipLabel>Grants</relationshipLabel>
+    <relationshipName>Grants</relationshipName>
     <required>true</required>
     <trackTrending>false</trackTrending>
     <type>Lookup</type>
