@@ -35,6 +35,9 @@ export default class QuickContactInput extends LightningElement {
       Email: this.email
     };
 
+    // TODO: Add try/catch
+    // TODO: Add success message
+    // TODO: disable/enable save button
     await createContact({contact: contact, grantId: this.grantId});
   }
 
