@@ -1,0 +1,41 @@
+<template>
+  <div class="slds-box custom-slds-box">
+    <lightning-input
+      type="text"
+      max-length="40"
+      placeholder="First Name"
+      variant="label-hidden"
+      required
+      onchange={handleFirstNameChange}>
+    </lightning-input>
+
+    <lightning-input
+      type="text"
+      max-length="80"
+      placeholder="Last Name"
+      variant="label-hidden"
+      required
+      onchange={handleLastNameChange}>
+    </lightning-input>
+
+    <lightning-input
+      type="email"
+      max-length="80"
+      pattern="[A-Za-z0-9._-]+@[a-z0-9-]+\.[a-z]{2,}$"
+      message-when-pattern-mismatch="Email format is invalid"
+      placeholder="Email"
+      variant="label-hidden"
+      required
+      onchange={handleEmailChange}>
+    </lightning-input>
+
+    <div class="slds-text-align_right">
+    <lightning-button
+      disabled={saveButtonDisabled}
+      label="Save"
+      variant="Brand"
+      onclick={handleSave}
+    ></lightning-button>
+    </div>
+  </div>
+</template>

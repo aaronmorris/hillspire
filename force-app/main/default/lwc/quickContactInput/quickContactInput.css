@@ -1,0 +1,10 @@
+lightning-input {
+  /* margin-left: var(--lwc-varSpacingXxLarge); */
+  /* margin-right: var(--lwc-varSpacingXxLarge); */
+  margin-bottom: var(--lwc-varSpacingSmall);
+}
+
+.custom-slds-box {
+  padding-right: var(--lwc-varSpacingXxLarge);
+  padding-left: var(--lwc-varSpacingXxLarge);
+}

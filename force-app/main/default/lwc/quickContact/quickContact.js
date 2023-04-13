@@ -1,3 +1,5 @@
-import { LightningElement } from 'lwc';
+import { LightningElement, api } from 'lwc';
 
-export default class QuickContact extends LightningElement {}
+export default class QuickContact extends LightningElement {
+  @api recordId;
+}
