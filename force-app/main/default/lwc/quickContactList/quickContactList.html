@@ -1,3 +1,8 @@
 <template>
-  <lightning-datatable data={grantContacts} columns={columns} key-field="id" hide-checkbox-column></lightning-datatable>
+  <template lwc:if={hasData}>
+    <lightning-datatable data={grantContacts} columns={columns} key-field="id" hide-checkbox-column></lightning-datatable>
+  </template>
+  <template lwc:else>
+    There are currently no contacts associated with this Grant.
+  </template>
 </template>

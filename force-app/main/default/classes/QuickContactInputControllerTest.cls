@@ -51,6 +51,29 @@ public with sharing class QuickContactInputControllerTest {
   }
 
   @isTest
+  private static void createContact_missingContact() { // NOPMD - ApexUnitTestClassShouldHaveAsserts - Using new Assert class
+    Grant__c testGrant = new Grant__c(Name = 'Test Grant');
+    insert testGrant;
+
+    Boolean exceptionCaught = false;
+    Test.startTest();
+    try {
+      QuickContactInputController.createContact(null, testGrant.Id);
+    }
+    catch (AuraHandledException aex) {
+      exceptionCaught = true;
+    }
+    Test.stopTest();
+
+    List<Contact> contacts = [SELECT FirstName, LastName, Email FROM Contact];
+    List<Grant_Contact__c> grantContacts = [SELECT Grantee__c, Grant__c FROM Grant_Contact__c];
+
+    Assert.areEqual(0, contacts.size(), 'contact should not have been created');
+    Assert.areEqual(0, grantContacts.size(), 'no grant contact should have been created');
+    Assert.isTrue(exceptionCaught, 'exception should have been thrown');
+  }
+
+  @isTest
   private static void createContact_missingGrantId() { // NOPMD - ApexUnitTestClassShouldHaveAsserts - Using new Assert class
     Contact pendingContact = new Contact(FirstName = 'First', LastName = 'Last', Email = 'first.last@example.com');
 

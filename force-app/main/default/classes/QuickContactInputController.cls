@@ -1,6 +1,7 @@
 public with sharing class QuickContactInputController {
   @AuraEnabled
   public static Contact createContact(Contact contact, Id grantId){
+    // TODO: Create a generic permission check utility
     if (Schema.sObjectType.Contact.isCreateable() == false
       || Schema.sObjectType.Contact.fields.FirstName.isCreateable() == false
       || Schema.sObjectType.Contact.fields.LastName.isCreateable() == false
@@ -12,6 +13,7 @@ public with sharing class QuickContactInputController {
     }
 
     try {
+      // Should the contact be created if the Grant_Contact__c fails, or should there be a Savepoint/Rollback
       insert contact;
       insert new Grant_Contact__c (Grant__c = grantId, Grantee__c = contact.Id);
     }
