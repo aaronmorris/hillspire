@@ -43,7 +43,7 @@ export default class QuickContactInput extends LightningElement {
       await createContact({contact: contact, grantId: this.grantId});
       this.dispatchEvent(new CustomEvent('contactcreated'));
       this.clearForm();
-      this.saveButtonDisabled = false;
+      this.saveButtonDisabled = true;
       showToast('Success', 'Contact Created Successfully', 'success', 'dismissable');
     }
     catch (error) {
