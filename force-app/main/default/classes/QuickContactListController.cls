@@ -2,7 +2,14 @@ public with sharing class QuickContactListController {
 
   @AuraEnabled(cacheable=true)
   public static List<GrantContact> getGrantContacts(Id grantId){
-    List<Grant_Contact__c> grantContacts = [SELECT Id, Grantee__r.FirstName, Grantee__r.LastName, Grantee__r.Email, Grant__r.Name FROM Grant_Contact__c WHERE Grant__c = :grantId ORDER BY Grantee__r.LastName];
+    List<Grant_Contact__c> grantContacts = new List<Grant_Contact__c>();
+
+    try {
+      grantContacts = [SELECT Id, Grantee__r.FirstName, Grantee__r.LastName, Grantee__r.Email, Grant__r.Name FROM Grant_Contact__c WHERE Grant__c = :grantId WITH SECURITY_ENFORCED ORDER BY Grantee__r.LastName];
+    }
+    catch (Exception ex) {
+      throw new AuraHandledException(ex.getMessage());
+    }
 
     List<GrantContact> contacts = new List<GrantContact>();
     for (Grant_Contact__c grantContact : grantContacts) {

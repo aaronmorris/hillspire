@@ -8,7 +8,7 @@ public with sharing class QuickContactInputController {
       || Schema.sObjectType.Grant_Contact__c.isCreateable() == false
       || Schema.sObjectType.Grant_Contact__c.fields.Grant__c.isCreateable() == false
       || Schema.sObjectType.Grant_Contact__c.fields.Grantee__c.isCreateable() == false) {
-      throw new AuraHandledException('You do not have the correct permission to create a Grant Contact');
+      throw new AuraHandledException('The current user does not have the correct permission to create a Grant Contact');
     }
 
     try {
