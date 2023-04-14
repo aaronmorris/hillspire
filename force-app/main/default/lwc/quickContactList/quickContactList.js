@@ -30,7 +30,7 @@ const columns = [
 ];
 
 export default class QuickContactList extends LightningElement {
-  @api grantId = '';
+  @api grantId;
 
   get hasData() {
     return this.grantContacts.length > 0;
