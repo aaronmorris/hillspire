@@ -1,0 +1,78 @@
+name: Static Analysis
+on: [push, pull_request, workflow_dispatch]
+
+jobs:
+  salesforce-code-analyzer:
+    name: Salesforce Code Analyzer
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      - name: Get changed files using a comma separator
+        id: files
+        uses: tj-actions/changed-files@v32
+        with:
+          separator: ","
+      - run: |
+          echo '${{ steps.files.outputs.all_changed_files }}' >> ./added_modified_files.csv
+      - name: Save Changed files
+        if: hashFiles('./added_modified_files.csv') != ''
+        uses: actions/upload-artifact@v3
+        with:
+          name: scan-results
+          path: |
+            ./added_modified_files.csv
+      - name: Install Salesforce CLI
+        uses: sfdx-actions/setup-sfdx@v1
+        with:
+          sfdx-auth-url: ${{ secrets.AUTH_SECRET }}
+      - name: Install PMD
+        uses: legetz/setup-pmd@v6.38
+      - name: Install Node
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+      - name: Install LWC ESLint Plugin
+        run: |
+          npm install eslint babel-eslint @lwc/eslint-plugin-lwc --save-dev
+          npm install eslint @salesforce/eslint-config-lwc --save-dev
+
+      - name: Install Salesforce Code Analyzer
+        run: sfdx plugins:install @salesforce/sfdx-scanner
+      - name: Run Salesforce Code Analyzer
+        run: |
+            echo "Scanning files: ${{steps.files.outputs.all_changed_files}}"
+            sfdx scanner:run --target "${{ steps.files.outputs.all_changed_files }}" --pmdconfig=apex_ruleset.xml --engine "pmd,eslint-lwc,retire-js,cpd" --outfile ./scanner-results.json
+      - name: Save JSON Report Artifact
+        if: hashFiles('./scanner-results.json') != ''
+        uses: actions/upload-artifact@v3
+        with:
+          name: scan-results
+          path: |
+            ./scanner-results.json
+      - name: Read scanner-results.json
+        if: hashFiles('./scanner-results.json') != ''
+        id: package
+        uses: juliangruber/read-file-action@v1
+        with:
+          path: ./scanner-results.json
+      - name: Generate HTML Report
+        if: hashFiles('./scanner-results.json') != ''
+        run: |
+            echo "Scanning files: ${{steps.files.outputs.all_changed_files}}"
+            sfdx scanner:run --target "${{ steps.files.outputs.all_changed_files }}" --pmdconfig=apex_ruleset.xml --engine "pmd,eslint-lwc,retire-js,cpd" --outfile ./scanner-results.html
+      - name: Save HTML Report Artifact
+        if: hashFiles('./scanner-results.html') != ''
+        uses: actions/upload-artifact@v3
+        with:
+          name: scan-results
+          path: |
+            ./scanner-results.html
+      - name: Annotate with Salesforce Code Analyzer
+        if: hashFiles('./scanner-results.json') != ''
+        uses: aaronmorris/code-analyzer-annotation@v1.2
+        with:
+          fail-on-error: false
+          path: scanner-results.json
