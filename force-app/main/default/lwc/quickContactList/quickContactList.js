@@ -1,5 +1,6 @@
 import { LightningElement, api, wire, track } from 'lwc';
 
+import { refreshApex } from '@salesforce/apex';
 import getGrantContacts from '@salesforce/apex/QuickContactListController.getGrantContacts';
 
 const columns = [
@@ -9,11 +10,6 @@ const columns = [
     type: 'url',
     typeAttributes: { label: { fieldName: 'contactId' }, target: '_blank' }
   },
-  // {
-  //     label: 'Id',
-  //     fieldName: 'id',
-  //     type: 'text',
-  // },
   {
       label: 'First Name',
       fieldName: 'firstName',
@@ -36,27 +32,25 @@ export default class QuickContactList extends LightningElement {
 
   columns = columns;
   grantContacts = [];
-
-  // async connectedCallback() {
-  //   let data = await getGrantContacts({grantId: this.grantId});
-  //   data = JSON.parse(JSON.stringify(data));
-  //   data.forEach(grantContact => {grantContact.contactLink = '/' + grantContact.Grantee__c});
-  //   this.grantContacts = data;
-  //   console.log(this.grantContacts);
-  // }
+  wiredGrantContactsResult;
 
   @wire(getGrantContacts, {grantId: '$grantId'})
-  wireGetGrantContacts({error, data}) {
-    if (data) {
-      console.log('data:', data);
-      // data = JSON.parse(JSON.stringify(data));
-      // data.forEach(grantContact => {grantContact.contactLink = '/' + grantContact.Grantee__c});
-
-      this.grantContacts = data;
+  wireGetGrantContacts(result) {
+    this.wiredGrantContactsResult = result;
+    if (result.data) {
+      console.log('data:', result.data);
+      this.grantContacts = result.data;
     }
-    else if (error) {
-      console.error(error);
+    else if (result.error) {
+      console.error(result.error);
       // TODO: do something with the error
     }
+  }
+
+  @api refresh() {
+    console.log('refresh');
+    return refreshApex(this.wiredGrantContactsResult);
+    console.log('after refresh');
+    console.log(this.grantContacts);
   }
 }

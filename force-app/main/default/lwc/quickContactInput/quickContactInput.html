@@ -1,5 +1,8 @@
 <template>
   <div class="slds-box custom-slds-box">
+    <div>
+      <lightning-spinner if:true={saving}></lightning-spinner>
+    </div>
     <lightning-input
       type="text"
       max-length="40"
