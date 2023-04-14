@@ -2,7 +2,6 @@ public with sharing class QuickContactListController {
 
   @AuraEnabled(cacheable=true)
   public static List<GrantContact> getGrantContacts(Id grantId){
-    System.debug(grantId);
     List<Grant_Contact__c> grantContacts = [SELECT Id, Grantee__r.FirstName, Grantee__r.LastName, Grantee__r.Email, Grant__r.Name FROM Grant_Contact__c WHERE Grant__c = :grantId ORDER BY Grantee__r.LastName];
 
     List<GrantContact> contacts = new List<GrantContact>();

@@ -1,5 +1,7 @@
 import { LightningElement, api, wire, track } from 'lwc';
 
+import { showToast } from 'c/utilities';
+
 import { refreshApex } from '@salesforce/apex';
 import getGrantContacts from '@salesforce/apex/QuickContactListController.getGrantContacts';
 
@@ -21,9 +23,9 @@ const columns = [
     type: 'text',
   },
   {
-      label: 'Email',
-      fieldName: 'email',
-      type: 'text'
+    label: 'Email',
+    fieldName: 'email',
+    type: 'text'
   }
 ];
 
@@ -38,19 +40,20 @@ export default class QuickContactList extends LightningElement {
   wireGetGrantContacts(result) {
     this.wiredGrantContactsResult = result;
     if (result.data) {
-      console.log('data:', result.data);
       this.grantContacts = result.data;
     }
     else if (result.error) {
       console.error(result.error);
-      // TODO: do something with the error
+      let errorMessage = result.error.body.message;
+      if (!errorMessage) {
+        errorMessage = 'There was an error getting the contacts for this Grant';
+      }
+
+      showToast('Error', errorMessage, 'error', 'dismissable');
     }
   }
 
   @api refresh() {
-    console.log('refresh');
     return refreshApex(this.wiredGrantContactsResult);
-    console.log('after refresh');
-    console.log(this.grantContacts);
   }
 }

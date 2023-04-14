@@ -25,7 +25,6 @@ export default class QuickContactInput extends LightningElement {
   }
 
   handleEmailChange(event) {
-    console.log(event.target);
     this.email = event.target.value;
     this.saveButtonDisabled = !this.isFormValid();
   }
@@ -34,30 +33,34 @@ export default class QuickContactInput extends LightningElement {
     this.saving = true;
 
     const contact = {
-      sobjectType: "Contact",
+      sObjectType: "Contact",
       FirstName: this.firstName,
       LastName: this.lastName,
       Email: this.email
     };
 
-    // TODO: Add try/catch
-    // TODO: Add success message
-    // TODO: disable/enable save button
     try {
       await createContact({contact: contact, grantId: this.grantId});
       this.dispatchEvent(new CustomEvent('contactcreated'));
       this.clearForm();
-      showToast('Contact Created Successfully', '', 'success', 'dismissable');
+      this.saveButtonDisabled = false;
+      showToast('Success', 'Contact Created Successfully', 'success', 'dismissable');
     }
     catch (error) {
+      console.error(error);
+      let errorMessage = error.body.message;
+      if (!errorMessage) {
+        errorMessage = 'There was an error creating the contact';
+      }
 
+      showToast('Error', errorMessage, 'error', 'dismissable');
     }
+
     this.saving = false;
   }
 
   clearForm() {
     const inputs = this.template.querySelectorAll('lightning-input');
-    console.log(inputs.length);
 
     for (const input of inputs) {
       input.value = '';
@@ -66,7 +69,6 @@ export default class QuickContactInput extends LightningElement {
 
   isFormValid() {
     const inputs = this.template.querySelectorAll('lightning-input');
-    console.log(inputs.length);
 
     for (const input of inputs) {
       if (input.checkValidity() === false) {

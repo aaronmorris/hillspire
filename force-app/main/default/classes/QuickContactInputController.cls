@@ -1,16 +1,13 @@
 public with sharing class QuickContactInputController {
   @AuraEnabled
-  public static Id createContact(Contact contact, Id grantId){
+  public static Contact createContact(Contact contact, Id grantId){
     if (Schema.sObjectType.Contact.isCreateable() == false
       || Schema.sObjectType.Contact.fields.FirstName.isCreateable() == false
       || Schema.sObjectType.Contact.fields.LastName.isCreateable() == false
-      || Schema.sObjectType.Contact.fields.Email.isCreateable() == false) {
-      throw new AuraHandledException('You do not have the correct permissions to create a contact');
-    }
-
-    if (Schema.sObjectType.Grant_Contact__c.isCreateable() == false
-     || Schema.sObjectType.Grant_Contact__c.fields.Grant__c.isCreateable() == false
-     || Schema.sObjectType.Grant_Contact__c.fields.Grantee__c.isCreateable() == false) {
+      || Schema.sObjectType.Contact.fields.Email.isCreateable() == false
+      || Schema.sObjectType.Grant_Contact__c.isCreateable() == false
+      || Schema.sObjectType.Grant_Contact__c.fields.Grant__c.isCreateable() == false
+      || Schema.sObjectType.Grant_Contact__c.fields.Grantee__c.isCreateable() == false) {
       throw new AuraHandledException('You do not have the correct permission to create a Grant Contact');
     }
 
@@ -22,6 +19,6 @@ public with sharing class QuickContactInputController {
       throw new AuraHandledException(ex.getMessage());
     }
 
-    return contact.Id;
+    return contact;
   }
 }
