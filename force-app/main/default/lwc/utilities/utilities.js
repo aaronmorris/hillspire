@@ -1,4 +1,3 @@
-import { LightningElement } from 'lwc';
 import { ShowToastEvent } from 'lightning/platformShowToastEvent';
 
 export const showToast = (title, message, variant, mode) => {
